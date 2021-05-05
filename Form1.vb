@@ -44,10 +44,6 @@
 
     ReadOnly OriginalImage As Bitmap = My.Resources.PolarScreen 'Image with Target at 0 degree
     Dim Bmp As Bitmap 'Used to receive turned image from RotateImage
-    Public Shared Function Range24(x)
-        'Function makes sure hours are always between 0 and 23:59:59
-        Range24 = x - 24 * Int(x / 24)
-    End Function
     Public Shared Function Range360(x)
         'Function makes sure degrees are always between 0 and 359.99
         Range360 = x - 360 * Int(x / 360)
@@ -152,12 +148,20 @@
         'Calculates current bullseye position , displays it and rotates image
         MountSideofPier = objtelescope.SideOfPier
 
+        MountRA = objtelescope.RightAscension * 15
+        MountDec = objtelescope.Declination
+        TBRa.Text = DDtohms(MountRA / 15, 1)
+        TBDec.Text = DDtohms(MountDec, 2)
+
+        TBAltitude.Text = DDtohms(objtelescope.Altitude, 2)
+        TBAzimuth.Text = DDtohms(objtelescope.Azimuth, 2)
+
         If MountSideofPier = 0 Then
             TBSideofpier.Text = "Pier East"
-            CurrentBullseyePos = Range360(((objtelescope.RightAscension * 15) - (LSidereal) + 90) + SettingAngle)
+            CurrentBullseyePos = Range360(((MountRA) - (LSidereal) + 90) + SettingAngle)
         Else
             TBSideofpier.Text = "Pier West"
-            CurrentBullseyePos = Range360(((objtelescope.RightAscension * 15) - (LSidereal) - 90) + SettingAngle)
+            CurrentBullseyePos = Range360(((MountRA) - (LSidereal) - 90) + SettingAngle)
         End If
         Bmp = RotateImage(OriginalImage, CurrentBullseyePos)
         PictureBox1.Image = Bmp
@@ -265,6 +269,7 @@
             ScopeConnected()
             'Get latlong from Mount
             Getlatlong()
+            objtelescope.SlewSettleTime = 3
 
         End If
 
@@ -293,7 +298,6 @@
             BTNAbort.BackColor = Color.Silver
         End If
         PolarisHR()
-        Getazimuth()
         WhereisBullseye()
         SleworRotate()
 
@@ -453,18 +457,10 @@
         ' Store Mount longitude in SiteLong 
         SiteLong = objtelescope.SiteLongitude
         SiteLat = objtelescope.SiteLatitude
-        TBScopeLat.Text = DDtohms(objtelescope.SiteLatitude, 2)
+        TBScopeLat.Text = DDtohms(SiteLat, 2)
         TBScopeLong.Text = DDtohms(SiteLong, 2)
     End Sub
-    Private Sub Getazimuth()
-        MountRA = objtelescope.RightAscension * 15
-        MountDec = objtelescope.Declination
-        TBRa.Text = DDtohms(MountRA / 15, 1)
-        TBDec.Text = DDtohms(MountDec, 2)
 
-        TBAltitude.Text = DDtohms(objtelescope.Altitude, 2)
-        TBAzimuth.Text = DDtohms(objtelescope.Azimuth, 2)
-    End Sub
     Private Sub BTNSlew_click(sender As Object, e As EventArgs) Handles BTNSlew.Click
 
         'If Polarishourangle > 6 And Polarishourangle < 18 Then
@@ -501,16 +497,13 @@
     End Sub
     Private Sub BTNAbort_Click(sender As Object, e As EventArgs) Handles BTNAbort.Click
         objtelescope.AbortSlew()
-        ' sender.enabled = True
+        sender.enabled = True
         BTNAbort.BackColor = Color.Red
-
     End Sub
     Private Sub BTNExit_Click(sender As Object, e As EventArgs) Handles BTNExit.Click
         Application.Exit()
         End
     End Sub
-
-
     Private Sub BTConfigure_Click(sender As Object, e As EventArgs) Handles BTConfigure.Click
         'Dim box = New Form2()
         'box.Show()
@@ -522,15 +515,12 @@
     Private Sub BTSlewLeft_MouseUp(sender As Object, e As MouseEventArgs) Handles BTSlewLeft.MouseUp
         objtelescope.MoveAxis(0, 0)
     End Sub
-
     Private Sub BTSlewRight_MouseDown(sender As Object, e As MouseEventArgs) Handles BTSlewRight.MouseDown
         objtelescope.MoveAxis(0, 4)
     End Sub
-
     Private Sub BTSlewRight_MouseUp(sender As Object, e As MouseEventArgs) Handles BTSlewRight.MouseUp
         objtelescope.MoveAxis(0, 0)
     End Sub
-
 
 End Class
 
