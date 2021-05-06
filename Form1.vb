@@ -133,18 +133,18 @@
             Return retBMP
         End Using
     End Function
-    Private Sub Form1_Show(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Public Sub Form1_Show(sender As Object, e As EventArgs) Handles MyBase.Shown
         ' Sub runs at opening of form, shows 
         CurrentBullseyePos = SettingAngle 'Before connection, just show default setting for Target Position
 
         Bmp = RotateImage(OriginalImage, CurrentBullseyePos)
         PictureBox1.Image = Bmp
         TBTelescope.Text = My.Settings.Telescope
-
+        TBCurrentBullseye.Text = DDtohms(CurrentBullseyePos, 3)
         ReadytoConnect()
 
     End Sub
-    Private Sub WhereisBullseye()
+    Public Sub WhereisBullseye()
         'Calculates current bullseye position , displays it and rotates image
         MountSideofPier = objtelescope.SideOfPier
 

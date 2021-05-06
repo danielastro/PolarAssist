@@ -69,11 +69,14 @@
         Form1.SettingAngle = ConfigAngle
         My.Settings.PastHorizon = AllowPastAngle
         My.Settings.Save()
-        ' Form1.PictureBox1.Image = PBSetting.Image
-        Form1.TBTelescope.Text = My.Settings.Telescope
-        Form1.CurrentBullseyePos = ConfigAngle
 
-        Form1.ReadytoConnect()
+        ' If Scope is not connected
+        If Form1.Timer1.Enabled = False Then
+            Form1.CurrentBullseyePos = ConfigAngle
+            Form1.Form1_Show(2, e) 'I have no idea how to pass arguments and it seems unused
+            Form1.ReadytoConnect()
+        End If
+        Form1.TBTelescope.Text = My.Settings.Telescope
 
         Form1.Activate()
         Form1.Show()
