@@ -43,13 +43,15 @@ Partial Class Form2
         Me.Label6 = New System.Windows.Forms.Label()
         Me.TBAllowPast = New System.Windows.Forms.TextBox()
         Me.Label7 = New System.Windows.Forms.Label()
+        Me.BTSlewLeft = New System.Windows.Forms.Button()
+        Me.BTSlewRight = New System.Windows.Forms.Button()
         CType(Me.PBSetting, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'BTSaveexit
         '
         Me.BTSaveexit.BackColor = System.Drawing.Color.Lime
-        Me.BTSaveexit.Location = New System.Drawing.Point(96, 265)
+        Me.BTSaveexit.Location = New System.Drawing.Point(12, 295)
         Me.BTSaveexit.Name = "BTSaveexit"
         Me.BTSaveexit.Size = New System.Drawing.Size(125, 35)
         Me.BTSaveexit.TabIndex = 1
@@ -59,7 +61,7 @@ Partial Class Form2
         'BTConfCancel
         '
         Me.BTConfCancel.BackColor = System.Drawing.Color.Yellow
-        Me.BTConfCancel.Location = New System.Drawing.Point(96, 294)
+        Me.BTConfCancel.Location = New System.Drawing.Point(165, 295)
         Me.BTConfCancel.Name = "BTConfCancel"
         Me.BTConfCancel.Size = New System.Drawing.Size(125, 35)
         Me.BTConfCancel.TabIndex = 2
@@ -68,7 +70,7 @@ Partial Class Form2
         '
         'TBConfigScope
         '
-        Me.TBConfigScope.Location = New System.Drawing.Point(40, 72)
+        Me.TBConfigScope.Location = New System.Drawing.Point(41, 51)
         Me.TBConfigScope.Name = "TBConfigScope"
         Me.TBConfigScope.Size = New System.Drawing.Size(225, 20)
         Me.TBConfigScope.TabIndex = 3
@@ -77,7 +79,7 @@ Partial Class Form2
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(80, 44)
+        Me.Label1.Location = New System.Drawing.Point(81, 23)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(75, 13)
         Me.Label1.TabIndex = 4
@@ -94,7 +96,7 @@ Partial Class Form2
         '
         'BTConfSelect
         '
-        Me.BTConfSelect.Location = New System.Drawing.Point(190, 39)
+        Me.BTConfSelect.Location = New System.Drawing.Point(191, 18)
         Me.BTConfSelect.Name = "BTConfSelect"
         Me.BTConfSelect.Size = New System.Drawing.Size(75, 23)
         Me.BTConfSelect.TabIndex = 52
@@ -103,9 +105,9 @@ Partial Class Form2
         '
         'BTRight
         '
-        Me.BTRight.BackgroundImage = Global.PolarAssist.My.Resources.Resources.left_red_arrow
+        Me.BTRight.BackgroundImage = Global.PolarAssist.My.Resources.Resources.Right_red_arrow
         Me.BTRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BTRight.Location = New System.Drawing.Point(304, 269)
+        Me.BTRight.Location = New System.Drawing.Point(496, 269)
         Me.BTRight.Name = "BTRight"
         Me.BTRight.Size = New System.Drawing.Size(48, 48)
         Me.BTRight.TabIndex = 51
@@ -113,9 +115,9 @@ Partial Class Form2
         '
         'BTLeft
         '
-        Me.BTLeft.BackgroundImage = Global.PolarAssist.My.Resources.Resources.Right_red_arrow
+        Me.BTLeft.BackgroundImage = Global.PolarAssist.My.Resources.Resources.left_red_arrow
         Me.BTLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.BTLeft.Location = New System.Drawing.Point(496, 269)
+        Me.BTLeft.Location = New System.Drawing.Point(304, 269)
         Me.BTLeft.Name = "BTLeft"
         Me.BTLeft.Size = New System.Drawing.Size(48, 48)
         Me.BTLeft.TabIndex = 50
@@ -160,7 +162,7 @@ Partial Class Form2
         '
         Me.BTAutoSetTop.BackColor = System.Drawing.Color.IndianRed
         Me.BTAutoSetTop.Enabled = False
-        Me.BTAutoSetTop.Location = New System.Drawing.Point(40, 181)
+        Me.BTAutoSetTop.Location = New System.Drawing.Point(43, 220)
         Me.BTAutoSetTop.Name = "BTAutoSetTop"
         Me.BTAutoSetTop.Size = New System.Drawing.Size(101, 23)
         Me.BTAutoSetTop.TabIndex = 56
@@ -172,7 +174,7 @@ Partial Class Form2
         Me.LBAutoAngle.BackColor = System.Drawing.Color.IndianRed
         Me.LBAutoAngle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.LBAutoAngle.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LBAutoAngle.Location = New System.Drawing.Point(161, 207)
+        Me.LBAutoAngle.Location = New System.Drawing.Point(164, 246)
         Me.LBAutoAngle.Name = "LBAutoAngle"
         Me.LBAutoAngle.Size = New System.Drawing.Size(74, 30)
         Me.LBAutoAngle.TabIndex = 57
@@ -181,7 +183,7 @@ Partial Class Form2
         'TextBox1
         '
         Me.TextBox1.BackColor = System.Drawing.Color.IndianRed
-        Me.TextBox1.Location = New System.Drawing.Point(40, 139)
+        Me.TextBox1.Location = New System.Drawing.Point(42, 124)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(224, 36)
@@ -191,7 +193,7 @@ Partial Class Form2
         '
         'Label4
         '
-        Me.Label4.Location = New System.Drawing.Point(55, 207)
+        Me.Label4.Location = New System.Drawing.Point(58, 246)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(100, 30)
         Me.Label4.TabIndex = 59
@@ -203,7 +205,7 @@ Partial Class Form2
         Me.Label5.BackColor = System.Drawing.Color.Black
         Me.Label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Label5.ForeColor = System.Drawing.Color.Black
-        Me.Label5.Location = New System.Drawing.Point(12, 126)
+        Me.Label5.Location = New System.Drawing.Point(13, 105)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(278, 2)
         Me.Label5.TabIndex = 60
@@ -212,7 +214,7 @@ Partial Class Form2
         '
         Me.BTAutoSetBottom.BackColor = System.Drawing.Color.IndianRed
         Me.BTAutoSetBottom.Enabled = False
-        Me.BTAutoSetBottom.Location = New System.Drawing.Point(146, 181)
+        Me.BTAutoSetBottom.Location = New System.Drawing.Point(149, 220)
         Me.BTAutoSetBottom.Name = "BTAutoSetBottom"
         Me.BTAutoSetBottom.Size = New System.Drawing.Size(118, 23)
         Me.BTAutoSetBottom.TabIndex = 61
@@ -224,14 +226,14 @@ Partial Class Form2
         Me.Label6.BackColor = System.Drawing.Color.Black
         Me.Label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.Label6.ForeColor = System.Drawing.Color.Black
-        Me.Label6.Location = New System.Drawing.Point(12, 256)
+        Me.Label6.Location = New System.Drawing.Point(12, 286)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(278, 2)
         Me.Label6.TabIndex = 62
         '
         'TBAllowPast
         '
-        Me.TBAllowPast.Location = New System.Drawing.Point(205, 102)
+        Me.TBAllowPast.Location = New System.Drawing.Point(206, 81)
         Me.TBAllowPast.Name = "TBAllowPast"
         Me.TBAllowPast.Size = New System.Drawing.Size(60, 20)
         Me.TBAllowPast.TabIndex = 63
@@ -240,11 +242,33 @@ Partial Class Form2
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(40, 105)
+        Me.Label7.Location = New System.Drawing.Point(41, 84)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(144, 13)
         Me.Label7.TabIndex = 64
         Me.Label7.Text = "Allow Slew past Meridian by :"
+        '
+        'BTSlewLeft
+        '
+        Me.BTSlewLeft.BackgroundImage = Global.PolarAssist.My.Resources.Resources.left_red_arrow
+        Me.BTSlewLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.BTSlewLeft.Enabled = False
+        Me.BTSlewLeft.Location = New System.Drawing.Point(96, 166)
+        Me.BTSlewLeft.Name = "BTSlewLeft"
+        Me.BTSlewLeft.Size = New System.Drawing.Size(48, 48)
+        Me.BTSlewLeft.TabIndex = 66
+        Me.BTSlewLeft.UseVisualStyleBackColor = True
+        '
+        'BTSlewRight
+        '
+        Me.BTSlewRight.BackgroundImage = Global.PolarAssist.My.Resources.Resources.Right_red_arrow
+        Me.BTSlewRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.BTSlewRight.Enabled = False
+        Me.BTSlewRight.Location = New System.Drawing.Point(150, 166)
+        Me.BTSlewRight.Name = "BTSlewRight"
+        Me.BTSlewRight.Size = New System.Drawing.Size(48, 48)
+        Me.BTSlewRight.TabIndex = 65
+        Me.BTSlewRight.UseVisualStyleBackColor = True
         '
         'Form2
         '
@@ -253,6 +277,8 @@ Partial Class Form2
         Me.AutoSize = True
         Me.BackColor = System.Drawing.Color.DarkGray
         Me.ClientSize = New System.Drawing.Size(625, 344)
+        Me.Controls.Add(Me.BTSlewLeft)
+        Me.Controls.Add(Me.BTSlewRight)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.TBAllowPast)
         Me.Controls.Add(Me.Label6)
@@ -301,4 +327,6 @@ Partial Class Form2
     Friend WithEvents Label6 As Label
     Friend WithEvents TBAllowPast As TextBox
     Friend WithEvents Label7 As Label
+    Friend WithEvents BTSlewLeft As Button
+    Friend WithEvents BTSlewRight As Button
 End Class

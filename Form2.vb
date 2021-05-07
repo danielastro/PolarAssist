@@ -30,12 +30,7 @@
             ConfigAngle = ConfigAngle + 1
         End If
 
-        If ConfigAngle < 0 Then
-            ConfigAngle += 360
-        End If
-        If ConfigAngle > 359 Then
-            ConfigAngle -= 360
-        End If
+        ConfigAngle = Form1.Range360(ConfigAngle)
 
         LBAngleSetting.Text = Form1.DDtohms(ConfigAngle, 3)
         Bmp = Form1.RotateImage(OriginalImage, +ConfigAngle)
@@ -52,12 +47,7 @@
             ConfigAngle = ConfigAngle - 1
         End If
 
-        If ConfigAngle < 0 Then
-            ConfigAngle = ConfigAngle + 360
-        End If
-        If ConfigAngle > 359 Then
-            ConfigAngle = ConfigAngle - 360
-        End If
+        ConfigAngle = Form1.Range360(ConfigAngle)
 
         LBAngleSetting.Text = Form1.DDtohms(ConfigAngle, 3)
         Bmp = Form1.RotateImage(OriginalImage, +ConfigAngle)
@@ -140,8 +130,18 @@
 
     Private Sub TBAllowPast_TextChanged(sender As Object, e As EventArgs) Handles TBAllowPast.TextChanged
         AllowPastAngle = TBAllowPast.Text
-
     End Sub
-
+    Private Sub BTSlewLeft_MouseDown(sender As Object, e As MouseEventArgs) Handles BTSlewLeft.MouseDown
+        Form1.objtelescope.MoveAxis(0, -4)
+    End Sub
+    Private Sub BTSlewLeft_MouseUp(sender As Object, e As MouseEventArgs) Handles BTSlewLeft.MouseUp
+        Form1.objtelescope.MoveAxis(0, 0)
+    End Sub
+    Private Sub BTSlewRight_MouseDown(sender As Object, e As MouseEventArgs) Handles BTSlewRight.MouseDown
+        Form1.objtelescope.MoveAxis(0, 4)
+    End Sub
+    Private Sub BTSlewRight_MouseUp(sender As Object, e As MouseEventArgs) Handles BTSlewRight.MouseUp
+        Form1.objtelescope.MoveAxis(0, 0)
+    End Sub
 
 End Class

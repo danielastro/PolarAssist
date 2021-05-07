@@ -225,6 +225,9 @@
         BTNAbort.Enabled = True
         Form2.BTAutoSetTop.Enabled = True
         Form2.BTAutoSetBottom.Enabled = True
+        Form2.BTSlewLeft.Enabled = True
+        Form2.BTSlewRight.Enabled = True
+
 
     End Sub
     Public Sub ScopeDisconnected()
@@ -253,6 +256,8 @@
 
         Form2.BTAutoSetTop.Enabled = False
         Form2.BTAutoSetBottom.Enabled = False
+        Form2.BTSlewLeft.Enabled = False
+        Form2.BTSlewRight.Enabled = False
 
     End Sub
     Private Sub BTNConnect_Click(sender As Object, e As EventArgs) Handles BTNConnect.Click
