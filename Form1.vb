@@ -11,7 +11,10 @@
     Public SettingAngle As Double = My.Settings.AngleSetting ' Default angle of the Bulleye on the Polarscope at NCP
     Public AllowPastHorizon As Double = My.Settings.PastHorizon 'how many degrees past horizon do you allow slew
     Public CurrentBullseyePos As Double = 0 'Current position of the bullseye on the polarscope 
-    Public TargetedBullseye As Double
+    Public TargetedBullseye As Double ' Angle where the Bullseye has to be
+    Public TargetMountAngle As Double 'Angle of the scope to get the targeted bullseye
+    Public MountAngle As Double ' current angle of the scope im degrees
+
     Dim CWDistance As Double
     Dim CCWDistance As Double
     Dim RotateAngle As Double
@@ -146,6 +149,7 @@
     End Sub
     Public Sub WhereisBullseye()
         'Calculates current bullseye position , displays it and rotates image
+        'also calculates MOUNT Angle
         MountSideofPier = objtelescope.SideOfPier
 
         MountRA = objtelescope.RightAscension * 15
@@ -158,11 +162,16 @@
 
         If MountSideofPier = 0 Then
             TBSideofpier.Text = "Pier East"
-            CurrentBullseyePos = Range360(((MountRA) - (LSidereal) + 90) + SettingAngle)
+            MountAngle = Range360(MountRA - LSidereal + 90)
+            CurrentBullseyePos = Range360(MountAngle + SettingAngle)
+
         Else
             TBSideofpier.Text = "Pier West"
-            CurrentBullseyePos = Range360(((MountRA) - (LSidereal) - 90) + SettingAngle)
+            MountAngle = Range360(MountRA - LSidereal - 90)
+            CurrentBullseyePos = Range360(MountAngle + SettingAngle)
+
         End If
+        TBMountAngle.Text = DDtohms(MountAngle, 3)
         Bmp = RotateImage(OriginalImage, CurrentBullseyePos)
         PictureBox1.Image = Bmp
 
@@ -308,8 +317,6 @@
 
 
     End Sub
-
-
     Public Sub PolarisHR()
         'this gets polaris HA and therefore Bullseye Position
         LSidereal = Range360(Gst(Days2000) + SiteLong)
@@ -320,34 +327,40 @@
     End Sub
     Public Sub SleworRotate()
         'This subroutine decides if the scope can slew to the bullseye or if manual slew is required
+        'first by testing the mount angle at destination
         TargetedBullseye = Range360(360 - (Polarishourangle + 180))  ' plus 180 because scope inverts image
-
         TBTargetBullseye.Text = DDtohms(TargetedBullseye, 3)
         TBCurrentBullseye.Text = DDtohms(CurrentBullseyePos, 3)
-
         CCWDistance = Range360(CurrentBullseyePos - TargetedBullseye)
         CWDistance = Range360(TargetedBullseye - CurrentBullseyePos)
-
         TBCCWDisttoTarget.Text = DDtohms(CCWDistance, 3)
         TBCWDisttoTarget.Text = DDtohms(CWDistance, 3)
 
+        ' now that distance is known, lets find direction
         If Math.Abs(CCWDistance) < Math.Abs(CWDistance) Then
             RotateDirection = "CCW"
             'RotateAngle = CCWDistance
             RotateAngle = Math.Abs(CCWDistance)
+            TargetMountAngle = Range360(MountAngle - RotateAngle)
             TBCWDisttoTarget.BackColor = Color.White
             TBCCWDisttoTarget.BackColor = Color.LimeGreen
-
         Else
             RotateDirection = "CW"
             'RotateAngle = CWDistance
             RotateAngle = Math.Abs(CWDistance)
+            TargetMountAngle = Range360(MountAngle + RotateAngle)
             TBCWDisttoTarget.BackColor = Color.LimeGreen
             TBCCWDisttoTarget.BackColor = Color.White
-
         End If
 
-        If TargetedBullseye < 180 Then
+        ' if target mount angle is too far, cannot slew
+        If TargetMountAngle > 90 And TargetMountAngle < 270 Then
+            'cannot slew if destination is 
+            ' insert here code to bring mount close and allow rotate
+            SlewNoRotate = False
+            ' FinalRa = LSidereal
+
+        ElseIf TargetMountAngle <= 90 Then   'Can Slew to Bulseye
             TargetAZI = 270
             TargetALT = 3 'on the horizon
 
@@ -356,37 +369,16 @@
             TargetRA = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 1)
 
             If RotateDirection = "CW" Then
-
-                'add Distance angle . current Mount RA and DEC do not have to move if Bullseye (settingAngle) is at 0
+                'add Rotate angle 
                 FinalRa = Range360(MountRA + RotateAngle)  'Clockwise
-
-                If Range360(FinalRa + AllowPastHorizon) < LSidereal Then
-                    ' Cannot slew this far
-                    ' slew as far as possible and do the remaining using rotate
-                    SlewNoRotate = False
-                    FinalRa = LSidereal + AllowPastHorizon
-                Else
-                    'Can Slew to Bulseye
-                    SlewNoRotate = True
-                End If
-
+                SlewNoRotate = True
             Else 'Rotate is CCW
-                'add Ritate angle . current Current RA and DEC do not have to move if Bullseye (settingAngle) is at 0
+                'substract Rotate angle . 
                 FinalRa = Range360(MountRA - RotateAngle)  'counterClockwise
-
-                If FinalRa - AllowPastHorizon < LSidereal Then 'Not sure if it should be greather than or smaller
-                    ' Cannot slew this far
-                    ' slew as far as possible and do the remaining using rotate
-                    SlewNoRotate = False
-                    FinalRa = LSidereal - AllowPastHorizon
-                Else
-                    'Can Slew to Bulseye
-                    SlewNoRotate = True
-                End If
-
+                SlewNoRotate = True
             End If
 
-        Else 'Bulleye is > 180 degrees
+        Else ' Targetmountangle 270 degrees
             TargetAZI = 90
             TargetALT = 3 'on the horizon
 
@@ -394,39 +386,18 @@
             TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
             TargetRA = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 1)
 
-
             If RotateDirection = "CW" Then
-
-                'add Distance angle . current Mount RA and DEC do not have to move if Bullseye (settingAngle) is at 0
+                'add Distance angle
                 FinalRa = Range360(MountRA + RotateAngle)  'Clockwise
-
-                If Range360(FinalRa + AllowPastHorizon) > LSidereal Then
-                    ' Cannot slew this far
-                    ' slew as far as possible and do the remaining using rotate
-                    SlewNoRotate = False
-                    FinalRa = LSidereal + AllowPastHorizon
-                Else
-                    'Can Slew to Bulseye
-                    SlewNoRotate = True
-                End If
-
+                SlewNoRotate = True
             Else 'Rotate is CCW
-                'add Distance angle . current targetRA and DEC do not have to move if Bullseye (settingAngle) is at 0
+                'Substract Distance angle
                 FinalRa = Range360(MountRA - RotateAngle)  'counterClockwise
-
-                If FinalRa - AllowPastHorizon < LSidereal Then
-                    ' Cannot slew this far
-                    ' slew as far as possible and do the remaining using rotate
-                    SlewNoRotate = False
-                    FinalRa = LSidereal - AllowPastHorizon
-                Else
-                    'Can Slew to Bulseye
-                    SlewNoRotate = True
-                End If
-
+                SlewNoRotate = True
             End If
 
         End If
+
 
         FinalDec = TargetDec
         TBFinalDec.Text = DDtohms(FinalDec, 2)

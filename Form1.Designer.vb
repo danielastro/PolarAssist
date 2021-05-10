@@ -79,6 +79,8 @@ Partial Class Form1
         Me.BTSlewRight = New System.Windows.Forms.Button()
         Me.BTRotate = New System.Windows.Forms.Button()
         Me.LBCannotSlew = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.TBMountAngle = New System.Windows.Forms.TextBox()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -259,7 +261,7 @@ Partial Class Form1
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(504, 387)
+        Me.Label4.Location = New System.Drawing.Point(514, 382)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(44, 13)
         Me.Label4.TabIndex = 27
@@ -268,7 +270,7 @@ Partial Class Form1
         '
         'TBAzimuth
         '
-        Me.TBAzimuth.Location = New System.Drawing.Point(564, 387)
+        Me.TBAzimuth.Location = New System.Drawing.Point(564, 379)
         Me.TBAzimuth.Name = "TBAzimuth"
         Me.TBAzimuth.Size = New System.Drawing.Size(115, 20)
         Me.TBAzimuth.TabIndex = 26
@@ -277,7 +279,7 @@ Partial Class Form1
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(504, 364)
+        Me.Label5.Location = New System.Drawing.Point(514, 356)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(42, 13)
         Me.Label5.TabIndex = 25
@@ -286,7 +288,7 @@ Partial Class Form1
         '
         'TBAltitude
         '
-        Me.TBAltitude.Location = New System.Drawing.Point(564, 361)
+        Me.TBAltitude.Location = New System.Drawing.Point(564, 353)
         Me.TBAltitude.Name = "TBAltitude"
         Me.TBAltitude.Size = New System.Drawing.Size(115, 20)
         Me.TBAltitude.TabIndex = 24
@@ -596,12 +598,32 @@ Partial Class Form1
         Me.LBCannotSlew.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.LBCannotSlew.Visible = False
         '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(491, 410)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(67, 13)
+        Me.Label7.TabIndex = 63
+        Me.Label7.Text = "Mount Angle"
+        Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'TBMountAngle
+        '
+        Me.TBMountAngle.Location = New System.Drawing.Point(564, 407)
+        Me.TBMountAngle.Name = "TBMountAngle"
+        Me.TBMountAngle.Size = New System.Drawing.Size(115, 20)
+        Me.TBMountAngle.TabIndex = 62
+        Me.TBMountAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.LightSlateGray
         Me.ClientSize = New System.Drawing.Size(784, 441)
+        Me.Controls.Add(Me.Label7)
+        Me.Controls.Add(Me.TBMountAngle)
         Me.Controls.Add(Me.LBCannotSlew)
         Me.Controls.Add(Me.BTRotate)
         Me.Controls.Add(Me.BTSlewLeft)
@@ -719,4 +741,6 @@ Partial Class Form1
     Friend WithEvents BTSlewRight As Button
     Friend WithEvents BTRotate As Button
     Friend WithEvents LBCannotSlew As Label
+    Friend WithEvents Label7 As Label
+    Friend WithEvents TBMountAngle As TextBox
 End Class

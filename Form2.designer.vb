@@ -183,12 +183,13 @@ Partial Class Form2
         'TextBox1
         '
         Me.TextBox1.BackColor = System.Drawing.Color.IndianRed
-        Me.TextBox1.Location = New System.Drawing.Point(42, 124)
+        Me.TextBox1.Location = New System.Drawing.Point(42, 110)
         Me.TextBox1.Multiline = True
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(224, 36)
+        Me.TextBox1.Size = New System.Drawing.Size(224, 50)
         Me.TextBox1.TabIndex = 58
-        Me.TextBox1.Text = "Rotate mount until BullEye is at" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " top or bottom and press Key"
+        Me.TextBox1.Text = "Connect and Quick Align Mount" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Slew RA until BullEye is at" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " top or bottom and pr" &
+    "ess Key"
         Me.TextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'Label4
