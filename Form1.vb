@@ -100,7 +100,7 @@
         If TorD = 1 Then
             DDtohms = String.Concat(Sighr, ":", Sigmi, ":", Sigse)
         ElseIf TorD = 3 Then
-            DDtohms = String.Concat(Sighr, Chr(176))
+            DDtohms = String.Concat(Math.Round(Digitalhr), Chr(176))
         Else
             DDtohms = String.Concat(Sighr, Chr(176), " ", Sigmi, Chr(39), " ", Sigse, Chr(34))
         End If
@@ -357,8 +357,18 @@
         If TargetMountAngle > 90 And TargetMountAngle < 270 Then
             'cannot slew if destination is 
             ' insert here code to bring mount close and allow rotate
+            If TargetMountAngle < 90 Then
+                TargetAZI = 270
+            ElseIf TargetMountAngle > 270 Then
+                TargetAZI = 90
+            End If
+            TargetALT = 3 'on the horizon
+
+            ' convert the target ALT AZ ro RA DEC and then add Hour Angle to find Final RADEC
+            TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
+            TargetRA = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 1)
+            FinalRa = TargetRA
             SlewNoRotate = False
-            ' FinalRa = LSidereal
 
         ElseIf TargetMountAngle <= 90 Then   'Can Slew to Bulseye
             TargetAZI = 270
@@ -427,8 +437,6 @@
         End If
 
     End Sub
-
-
     Private Sub Getlatlong()
         ' Store Mount longitude in SiteLong 
         SiteLong = objtelescope.SiteLongitude
@@ -436,14 +444,10 @@
         TBScopeLat.Text = DDtohms(SiteLat, 2)
         TBScopeLong.Text = DDtohms(SiteLong, 2)
     End Sub
-
     Private Sub BTNSlew_click(sender As Object, e As EventArgs) Handles BTNSlew.Click
 
-        'If Polarishourangle > 6 And Polarishourangle < 18 Then
-        'MessageBox.Show("Careful, position may result in hitting the pier, proceed with caution")
-        ' End If
-
         If Statustracking = True Then
+            objtelescope.Tracking = True
 
             objtelescope.TargetRightAscension = FinalRa / 15
             objtelescope.TargetDeclination = FinalDec
@@ -454,21 +458,14 @@
         End If
 
     End Sub
-
     Private Sub BTRotate_Click(sender As Object, e As EventArgs) Handles BTRotate.Click
-        ' If Polarishourangle > 6 And Polarishourangle < 18 Then
-        ' MessageBox.Show("Careful, position may result in hitting the pier, proceed with caution")
-        ' End If
-
-
         If Statustracking = True Then
             objtelescope.TargetRightAscension = FinalRa / 15
             objtelescope.TargetDeclination = FinalDec
             objtelescope.SlewToTargetAsync()
             BTNAbort.BackColor = Color.Yellow
-
         Else
-            MessageBox.Show("Cannot slew if Scope is not tracking")
+            MessageBox.Show("Cannot Rotate if Scope is not tracking")
         End If
     End Sub
     Private Sub BTNAbort_Click(sender As Object, e As EventArgs) Handles BTNAbort.Click
@@ -498,6 +495,13 @@
         objtelescope.MoveAxis(0, 0)
     End Sub
 
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+        Dim NCPAzimuth As Double = 0.0000005
+        objtelescope.Tracking = False
+        objtelescope.SlewToAltAzAsync(NCPAzimuth, SiteLat)
+
+    End Sub
 End Class
 
 Public Class Astroformulas

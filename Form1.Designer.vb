@@ -81,6 +81,7 @@ Partial Class Form1
         Me.LBCannotSlew = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.TBMountAngle = New System.Windows.Forms.TextBox()
+        Me.Button1 = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -403,7 +404,7 @@ Partial Class Form1
         Me.BTNAbort.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.BTNAbort.Location = New System.Drawing.Point(423, 292)
         Me.BTNAbort.Name = "BTNAbort"
-        Me.BTNAbort.Size = New System.Drawing.Size(75, 57)
+        Me.BTNAbort.Size = New System.Drawing.Size(75, 43)
         Me.BTNAbort.TabIndex = 42
         Me.BTNAbort.Text = "Abort"
         Me.BTNAbort.UseVisualStyleBackColor = False
@@ -616,12 +617,22 @@ Partial Class Form1
         Me.TBMountAngle.TabIndex = 62
         Me.TBMountAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(423, 345)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 64
+        Me.Button1.Text = "NCP"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.LightSlateGray
         Me.ClientSize = New System.Drawing.Size(784, 441)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.TBMountAngle)
         Me.Controls.Add(Me.LBCannotSlew)
@@ -743,4 +754,5 @@ Partial Class Form1
     Friend WithEvents LBCannotSlew As Label
     Friend WithEvents Label7 As Label
     Friend WithEvents TBMountAngle As TextBox
+    Friend WithEvents Button1 As Button
 End Class
