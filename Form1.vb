@@ -231,6 +231,11 @@
 
         BTSlewRight.Enabled = True
         BTSlewLeft.Enabled = True
+        BTNCP.Enabled = True
+        BTNCP.BackColor = Color.LimeGreen
+        BTFlip.Enabled = True
+        BTFlip.BackColor = Color.LimeGreen
+
         BTNAbort.Enabled = True
         Form2.BTAutoSetTop.Enabled = True
         Form2.BTAutoSetBottom.Enabled = True
@@ -262,6 +267,10 @@
 
         BTSlewRight.Enabled = False
         BTSlewLeft.Enabled = False
+        BTNCP.Enabled = False
+        BTNCP.BackColor = Color.Red
+        BTFlip.Enabled = False
+        BTFlip.BackColor = Color.Red
 
         Form2.BTAutoSetTop.Enabled = False
         Form2.BTAutoSetBottom.Enabled = False
@@ -283,8 +292,11 @@
             ScopeConnected()
             'Get latlong from Mount
             Getlatlong()
-            objtelescope.SlewSettleTime = 3
-
+            'Try
+            'objtelescope.SlewSettleTime = 3  ' not implemented in CPWI Need to work on catching exception
+            'Catch ex As Exception
+            'MessageBox.Show("cannot set settle time " & ex.Message, "Error Message")
+            ' End Try
         End If
 
     End Sub
@@ -357,12 +369,12 @@
         If TargetMountAngle > 90 And TargetMountAngle < 270 Then
             'cannot slew if destination is 
             ' insert here code to bring mount close and allow rotate
-            If TargetMountAngle < 90 Then
+            If TargetMountAngle <= 90 Then
                 TargetAZI = 270
-            ElseIf TargetMountAngle > 270 Then
+            ElseIf TargetMountAngle >= 270 Then
                 TargetAZI = 90
             End If
-            TargetALT = 3 'on the horizon
+            TargetALT = 4 'on the horizon
 
             ' convert the target ALT AZ ro RA DEC and then add Hour Angle to find Final RADEC
             TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
@@ -372,7 +384,7 @@
 
         ElseIf TargetMountAngle <= 90 Then   'Can Slew to Bulseye
             TargetAZI = 270
-            TargetALT = 3 'on the horizon
+            TargetALT = 4 'on the horizon
 
             ' convert the target ALT AZ ro RA DEC and then add Hour Angle to find Final RADEC
             TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
@@ -445,17 +457,16 @@
         TBScopeLong.Text = DDtohms(SiteLong, 2)
     End Sub
     Private Sub BTNSlew_click(sender As Object, e As EventArgs) Handles BTNSlew.Click
-
-        If Statustracking = True Then
+        ' turn on tracking if not
+        If Statustracking = False Then
             objtelescope.Tracking = True
-
-            objtelescope.TargetRightAscension = FinalRa / 15
-            objtelescope.TargetDeclination = FinalDec
-            objtelescope.SlewToTargetAsync()
-            BTNAbort.BackColor = Color.Yellow
-        Else
-            MessageBox.Show("Cannot slew if Scope is not tracking")
         End If
+
+        objtelescope.TargetRightAscension = FinalRa / 15
+        objtelescope.TargetDeclination = FinalDec
+        objtelescope.SlewToTargetAsync()
+        BTNAbort.BackColor = Color.Yellow
+
 
     End Sub
     Private Sub BTRotate_Click(sender As Object, e As EventArgs) Handles BTRotate.Click
@@ -495,12 +506,26 @@
         objtelescope.MoveAxis(0, 0)
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub BTNCP_Click(sender As Object, e As EventArgs) Handles BTNCP.Click
 
         Dim NCPAzimuth As Double = 0.0000005
-        objtelescope.Tracking = False
-        objtelescope.SlewToAltAzAsync(NCPAzimuth, SiteLat)
 
+        ' convert the target ALT AZ ro RA DEC and then slew to NCP
+        Dim NCPDec As Double = Astroformulas.RADec(Days2000, SiteLat, NCPAzimuth, SiteLat, SiteLong, 2)
+        Dim NCPRA As Double = Astroformulas.RADec(Days2000, SiteLat, NCPAzimuth, SiteLat, SiteLong, 1)
+        objtelescope.Tracking = True
+        objtelescope.TargetRightAscension = NCPRA / 15
+        objtelescope.TargetDeclination = NCPDec
+        objtelescope.SlewToTargetAsync()
+        BTNAbort.BackColor = Color.Yellow
+        'wait until slewing is finished
+        ' Threading.Thread.Sleep(5000) 'not needed
+        objtelescope.Tracking = False
+
+    End Sub
+
+    Private Sub BTFlip_Click(sender As Object, e As EventArgs) Handles BTFlip.Click
+        MessageBox.Show(objtelescope.CanSetPierSide)
     End Sub
 End Class
 

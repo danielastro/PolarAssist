@@ -81,7 +81,8 @@ Partial Class Form1
         Me.LBCannotSlew = New System.Windows.Forms.Label()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.TBMountAngle = New System.Windows.Forms.TextBox()
-        Me.Button1 = New System.Windows.Forms.Button()
+        Me.BTNCP = New System.Windows.Forms.Button()
+        Me.BTFlip = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -226,7 +227,7 @@ Partial Class Form1
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(505, 322)
+        Me.Label2.Location = New System.Drawing.Point(523, 318)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(29, 13)
         Me.Label2.TabIndex = 23
@@ -244,7 +245,7 @@ Partial Class Form1
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(504, 300)
+        Me.Label3.Location = New System.Drawing.Point(522, 296)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(28, 13)
         Me.Label3.TabIndex = 21
@@ -602,7 +603,7 @@ Partial Class Form1
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(491, 410)
+        Me.Label7.Location = New System.Drawing.Point(492, 410)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(67, 13)
         Me.Label7.TabIndex = 63
@@ -617,14 +618,27 @@ Partial Class Form1
         Me.TBMountAngle.TabIndex = 62
         Me.TBMountAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'Button1
+        'BTNCP
         '
-        Me.Button1.Location = New System.Drawing.Point(423, 345)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 64
-        Me.Button1.Text = "NCP"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.BTNCP.BackColor = System.Drawing.Color.Red
+        Me.BTNCP.Enabled = False
+        Me.BTNCP.Location = New System.Drawing.Point(423, 341)
+        Me.BTNCP.Name = "BTNCP"
+        Me.BTNCP.Size = New System.Drawing.Size(75, 23)
+        Me.BTNCP.TabIndex = 64
+        Me.BTNCP.Text = "NCP"
+        Me.BTNCP.UseVisualStyleBackColor = False
+        '
+        'BTFlip
+        '
+        Me.BTFlip.BackColor = System.Drawing.Color.Red
+        Me.BTFlip.Enabled = False
+        Me.BTFlip.Location = New System.Drawing.Point(423, 362)
+        Me.BTFlip.Name = "BTFlip"
+        Me.BTFlip.Size = New System.Drawing.Size(75, 23)
+        Me.BTFlip.TabIndex = 65
+        Me.BTFlip.Text = "Flip 180"
+        Me.BTFlip.UseVisualStyleBackColor = False
         '
         'Form1
         '
@@ -632,7 +646,8 @@ Partial Class Form1
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.LightSlateGray
         Me.ClientSize = New System.Drawing.Size(784, 441)
-        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.BTFlip)
+        Me.Controls.Add(Me.BTNCP)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.TBMountAngle)
         Me.Controls.Add(Me.LBCannotSlew)
@@ -754,5 +769,6 @@ Partial Class Form1
     Friend WithEvents LBCannotSlew As Label
     Friend WithEvents Label7 As Label
     Friend WithEvents TBMountAngle As TextBox
-    Friend WithEvents Button1 As Button
+    Friend WithEvents BTNCP As Button
+    Friend WithEvents BTFlip As Button
 End Class
