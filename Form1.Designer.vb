@@ -83,6 +83,7 @@ Partial Class Form1
         Me.TBMountAngle = New System.Windows.Forms.TextBox()
         Me.BTNCP = New System.Windows.Forms.Button()
         Me.BTFlip = New System.Windows.Forms.Button()
+        Me.Timer3 = New System.Windows.Forms.Timer(Me.components)
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -640,6 +641,9 @@ Partial Class Form1
         Me.BTFlip.Text = "Flip 180"
         Me.BTFlip.UseVisualStyleBackColor = False
         '
+        'Timer3
+        '
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -771,4 +775,5 @@ Partial Class Form1
     Friend WithEvents TBMountAngle As TextBox
     Friend WithEvents BTNCP As Button
     Friend WithEvents BTFlip As Button
+    Friend WithEvents Timer3 As Timer
 End Class

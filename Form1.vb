@@ -39,6 +39,8 @@
     Public SiteLat As Double
     Public MountRA As Double
     Public MountDec As Double
+    Dim TenthSec As Integer = 0
+
 
     Dim Epoch2000 As Date 'Epoch J2000 is jan 1st 2000 at noon
     Dim Epochmaintenant As Date
@@ -525,7 +527,30 @@
     End Sub
 
     Private Sub BTFlip_Click(sender As Object, e As EventArgs) Handles BTFlip.Click
-        MessageBox.Show(objtelescope.CanSetPierSide)
+
+        If MountSideofPier = 0 Then
+            ' "Pier East"
+            objtelescope.MoveAxis(1, +4)
+        Else
+            ' "Pier West"
+            objtelescope.MoveAxis(1, -4)
+        End If
+        TenthSec = 0
+        Timer3.Start() 'Timer starts functioning
+        BTNAbort.BackColor = Color.Yellow
+        'MessageBox.Show(objtelescope.AxisRates(1))
+
+    End Sub
+
+    Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles Timer3.Tick
+
+        TenthSec = TenthSec + 1
+        If TenthSec >= 450 Then
+            Timer3.Stop() 'Timer stops functioning
+            objtelescope.MoveAxis(1, 0)
+        End If
+
+
     End Sub
 End Class
 
