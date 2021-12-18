@@ -5,55 +5,31 @@
 
     Dim FinalRa As Double 'RA where the scope will slew
     Dim FinalDec As Double 'DEC where the Scope will slew
-    Dim SlewNoRotate As Boolean = True ' Allows to chose slew method 
     Dim Statustracking As Boolean = False 'To follow If scope Is tracking
 
-    Public SettingAngle As Double = My.Settings.AngleSetting ' Default angle of the Bulleye on the Polarscope at NCP
-    Public AllowPastHorizon As Double = My.Settings.PastHorizon 'how many degrees past horizon do you allow slew
-    Public CurrentBullseyePos As Double = 0 'Current position of the bullseye on the polarscope 
-    Public TargetedBullseye As Double ' Angle where the Bullseye has to be
-    Public TargetMountAngle As Double 'Angle of the scope to get the targeted bullseye
     Public MountAngle As Double ' current angle of the scope im degrees
 
-    Dim CWDistance As Double
-    Dim CCWDistance As Double
-    Dim RotateAngle As Double
-    Dim RotateDirection As String
-
-    Dim TargetAZI As Integer
-    Dim TargetALT As Integer
-
-    Dim TargetRA As Double
-    Dim TargetDec As Double
-
-
-    Public PolarisRAJNow As Double = 44.52383333 'Constant
-    'Dim PolarisDecJNow As Double = 89.35213889  'Constant
-    'Dim PolarisRAJ2000 As Double = 37.9637083   'Constant
-    'Dim PolarisDecJ2000 As Double = 89.2643056  'Constant
-
-
     Public LSidereal As Double 'Local Sidereal Time
-    Dim Polarishourangle As Double ' Hour Angle of Polaris based on Local Sidereal Time
     Public SiteLong As Double
     Public SiteLat As Double
     Public MountRA As Double
     Public MountDec As Double
-    Dim TenthSec As Integer = 0
+    Public MountAltitude As Double
+    Public MountAzimuth As Double
+    Public MountSiderealTime As Double
 
+    Dim TenthSec As Integer = 0
 
     Dim Epoch2000 As Date 'Epoch J2000 is jan 1st 2000 at noon
     Dim Epochmaintenant As Date
     Dim Tspan As TimeSpan
     Dim Days2000 As Double 'Days since Jan 1st 2000 Noon
 
-    ReadOnly OriginalImage As Bitmap = My.Resources.PolarScreen 'Image with Target at 0 degree
-    Dim Bmp As Bitmap 'Used to receive turned image from RotateImage
     Public Shared Function Range360(x)
         'Function makes sure degrees are always between 0 and 359.99
         Range360 = x - 360 * Int(x / 360)
     End Function
-    Public Function DDtohms(Digitalhr, TorD)
+    Public Shared Function DDtohms(Digitalhr, TorD)
         'Converts RA expressed As degrees(360) To the 24 hour format
         'Divide RA In 360 degrees by 15 To Get 24 hrs format
         'TorD = 1 for HH:mm:ss
@@ -116,42 +92,20 @@
         Gst = Gst + (0.000387933 * (T ^ 2)) - (T ^ 3) / 38710000
         Gst = Range360(Gst)
     End Function
-    Public Function RotateImage(img As Image, angle As Single) As Bitmap
-        ' the calling code is responsible for (and must) 
-        ' disposing of the bitmap returned
-
-        Dim retBMP As New Bitmap(img.Width, img.Height)
-        retBMP.SetResolution(img.HorizontalResolution, img.VerticalResolution)
-
-        Using g = Graphics.FromImage(retBMP)
-            ' rotate aroung the center of the image
-            g.TranslateTransform(img.Width \ 2, img.Height \ 2)
-
-            'rotate
-            g.RotateTransform(angle)
-
-            g.TranslateTransform(-img.Width \ 2, -img.Height \ 2)
-
-            'draw image to the bitmap
-            g.DrawImage(img, New PointF(0, 0))
-
-            Return retBMP
-        End Using
-    End Function
     Public Sub Form1_Show(sender As Object, e As EventArgs) Handles MyBase.Shown
         ' Sub runs at opening of form, shows 
-        CurrentBullseyePos = SettingAngle 'Before connection, just show default setting for Target Position
 
-        Bmp = RotateImage(OriginalImage, CurrentBullseyePos)
-        PictureBox1.Image = Bmp
         TBTelescope.Text = My.Settings.Telescope
-        TBCurrentBullseye.Text = DDtohms(CurrentBullseyePos, 3)
+        TBTargetAltitude.Text = DDtohms(My.Settings.FlatAltitude, 2)
+        TBTargetAzimuth.Text = DDtohms(My.Settings.FlatAzimuth, 2)
+
         ReadytoConnect()
 
     End Sub
-    Public Sub WhereisBullseye()
-        'Calculates current bullseye position , displays it and rotates image
+    Public Sub WhereisMount()
+        'Calculates current Mount position , displays it
         'also calculates MOUNT Angle
+        'Runs when timer1 is enabled
         MountSideofPier = objtelescope.SideOfPier
 
         MountRA = objtelescope.RightAscension * 15
@@ -159,23 +113,23 @@
         TBRa.Text = DDtohms(MountRA / 15, 1)
         TBDec.Text = DDtohms(MountDec, 2)
 
+        MountAltitude = objtelescope.Altitude
+        MountAzimuth = objtelescope.Azimuth
         TBAltitude.Text = DDtohms(objtelescope.Altitude, 2)
         TBAzimuth.Text = DDtohms(objtelescope.Azimuth, 2)
+        Form2.CurAlt.Text = DDtohms(objtelescope.Altitude, 2)
+        Form2.CurAz.Text = DDtohms(objtelescope.Azimuth, 2)
 
         If MountSideofPier = 0 Then
             TBSideofpier.Text = "Pier East"
             MountAngle = Range360(MountRA - LSidereal + 90)
-            CurrentBullseyePos = Range360(MountAngle + SettingAngle)
 
         Else
             TBSideofpier.Text = "Pier West"
             MountAngle = Range360(MountRA - LSidereal - 90)
-            CurrentBullseyePos = Range360(MountAngle + SettingAngle)
 
         End If
         TBMountAngle.Text = DDtohms(MountAngle, 3)
-        Bmp = RotateImage(OriginalImage, CurrentBullseyePos)
-        PictureBox1.Image = Bmp
 
     End Sub
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick 'Timer 2 runs all the time to update the clock
@@ -183,10 +137,11 @@
         TBUtc.Text = DateTime.UtcNow
         Epoch2000 = DateSerial(2000, 1, 1).AddDays(0.5) 'Epoch J2000 is jan 1st 2000 at noon
         Epochmaintenant = DateTime.UtcNow
-        Tspan = Epochmaintenant - Epoch2000 'time span between jan 1 2000 nooon and now
+        Tspan = Epochmaintenant - Epoch2000 'time span between jan 1 2000 noon and now
         Days2000 = Tspan.TotalDays 'Days since Jan 1st 2000 Noon
         TBJ2000.Text = Math.Round(Days2000, 4)
         TBMSidereal.Text = DDtohms(Gst(Days2000) / 15, 1) 'Sidereal Time at Longitude 0 (Greenwitch)
+
     End Sub
     Private Sub BTNSelect_Click(sender As Object, e As EventArgs) Handles BTNSelect.Click
         'Ascom Sub to chose the Ascom Scope
@@ -216,6 +171,9 @@
             BTNConnect.Enabled = False
             BTNConnect.BackColor = Color.Red
             BTNSelect.BackColor = Color.LimeGreen
+
+            Form2.BTGetAltAz.Enabled = False
+            Form2.BTGetAltAz.BackColor = Color.Red
         End If
     End Sub
     Public Sub ScopeConnected()
@@ -231,18 +189,17 @@
         BTNSelect.Enabled = False
         BTNSelect.BackColor = Color.Red
 
-        BTSlewRight.Enabled = True
-        BTSlewLeft.Enabled = True
-        BTNCP.Enabled = True
-        BTNCP.BackColor = Color.LimeGreen
-        BTFlip.Enabled = True
-        BTFlip.BackColor = Color.LimeGreen
+        Form2.BTSlewRight.Enabled = True
+        Form2.BTSlewLeft.Enabled = True
+        Form2.BTSlewUp.Enabled = True
+        Form2.BTSlewDown.Enabled = True
 
         BTNAbort.Enabled = True
-        Form2.BTAutoSetTop.Enabled = True
-        Form2.BTAutoSetBottom.Enabled = True
-        Form2.BTSlewLeft.Enabled = True
-        Form2.BTSlewRight.Enabled = True
+        BTNSlew.Enabled = True
+        BTNSlew.BackColor = Color.LimeGreen
+
+        Form2.BTGetAltAz.Enabled = True
+        Form2.BTGetAltAz.BackColor = Color.LimeGreen
 
 
     End Sub
@@ -267,17 +224,25 @@
         BTNSelect.Enabled = True
         BTNSelect.BackColor = Color.Gold
 
-        BTSlewRight.Enabled = False
-        BTSlewLeft.Enabled = False
-        BTNCP.Enabled = False
-        BTNCP.BackColor = Color.Red
-        BTFlip.Enabled = False
-        BTFlip.BackColor = Color.Red
+        Form2.BTGetAltAz.Enabled = False
+        Form2.BTGetAltAz.BackColor = Color.Red
 
-        Form2.BTAutoSetTop.Enabled = False
-        Form2.BTAutoSetBottom.Enabled = False
-        Form2.BTSlewLeft.Enabled = False
         Form2.BTSlewRight.Enabled = False
+        Form2.BTSlewLeft.Enabled = False
+        Form2.BTSlewUp.Enabled = False
+        Form2.BTSlewDown.Enabled = False
+
+        TBLSidereal.Text = ""
+        TBMountSidereal.Text = ""
+        TBRa.Text = ""
+        TBDec.Text = ""
+        TBAltitude.Text = ""
+        TBAzimuth.Text = ""
+        TBMountAngle.Text = ""
+        TBSideofpier.Text = ""
+        Form2.CurAlt.Text = ""
+        Form2.CurAz.Text = ""
+
 
     End Sub
     Private Sub BTNConnect_Click(sender As Object, e As EventArgs) Handles BTNConnect.Click
@@ -325,131 +290,17 @@
             CBSlewing.Checked = False
             BTNAbort.BackColor = Color.Silver
         End If
-        PolarisHR()
-        WhereisBullseye()
-        SleworRotate()
+        MountHR()
+        WhereisMount()
 
 
     End Sub
-    Public Sub PolarisHR()
-        'this gets polaris HA and therefore Bullseye Position
+    Public Sub MountHR()
+        'this gets Mount and Local SiderealTime 
         LSidereal = Range360(Gst(Days2000) + SiteLong)
         TBLSidereal.Text = DDtohms(LSidereal / 15, 1)
-        Polarishourangle = Range360((LSidereal - PolarisRAJNow))
-        TBPolarisHA.Text = DDtohms(Polarishourangle / 15, 1)
-
-    End Sub
-    Public Sub SleworRotate()
-        'This subroutine decides if the scope can slew to the bullseye or if manual slew is required
-        'first by testing the mount angle at destination
-        TargetedBullseye = Range360(360 - (Polarishourangle + 180))  ' plus 180 because scope inverts image
-        TBTargetBullseye.Text = DDtohms(TargetedBullseye, 3)
-        TBCurrentBullseye.Text = DDtohms(CurrentBullseyePos, 3)
-        CCWDistance = Range360(CurrentBullseyePos - TargetedBullseye)
-        CWDistance = Range360(TargetedBullseye - CurrentBullseyePos)
-        TBCCWDisttoTarget.Text = DDtohms(CCWDistance, 3)
-        TBCWDisttoTarget.Text = DDtohms(CWDistance, 3)
-
-        ' now that distance is known, lets find direction
-        If Math.Abs(CCWDistance) < Math.Abs(CWDistance) Then
-            RotateDirection = "CCW"
-            'RotateAngle = CCWDistance
-            RotateAngle = Math.Abs(CCWDistance)
-            TargetMountAngle = Range360(MountAngle - RotateAngle)
-            TBCWDisttoTarget.BackColor = Color.White
-            TBCCWDisttoTarget.BackColor = Color.LimeGreen
-        Else
-            RotateDirection = "CW"
-            'RotateAngle = CWDistance
-            RotateAngle = Math.Abs(CWDistance)
-            TargetMountAngle = Range360(MountAngle + RotateAngle)
-            TBCWDisttoTarget.BackColor = Color.LimeGreen
-            TBCCWDisttoTarget.BackColor = Color.White
-        End If
-
-        ' if target mount angle is too far, cannot slew
-        If TargetMountAngle > 90 And TargetMountAngle < 270 Then
-            'cannot slew if destination is 
-            ' insert here code to bring mount close and allow rotate
-            If TargetMountAngle <= 90 Then
-                TargetAZI = 270
-            ElseIf TargetMountAngle >= 270 Then
-                TargetAZI = 90
-            End If
-            TargetALT = 4 'on the horizon
-
-            ' convert the target ALT AZ ro RA DEC and then add Hour Angle to find Final RADEC
-            TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
-            TargetRA = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 1)
-            FinalRa = TargetRA
-            SlewNoRotate = False
-
-        ElseIf TargetMountAngle <= 90 Then   'Can Slew to Bulseye
-            TargetAZI = 270
-            TargetALT = 4 'on the horizon
-
-            ' convert the target ALT AZ ro RA DEC and then add Hour Angle to find Final RADEC
-            TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
-            TargetRA = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 1)
-
-            If RotateDirection = "CW" Then
-                'add Rotate angle 
-                FinalRa = Range360(MountRA + RotateAngle)  'Clockwise
-                SlewNoRotate = True
-            Else 'Rotate is CCW
-                'substract Rotate angle . 
-                FinalRa = Range360(MountRA - RotateAngle)  'counterClockwise
-                SlewNoRotate = True
-            End If
-
-        Else ' Targetmountangle 270 degrees
-            TargetAZI = 90
-            TargetALT = 3 'on the horizon
-
-            ' convert the target ALT AZ ro RA DEC and then add Hour Angle to find Final RADEC
-            TargetDec = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 2)
-            TargetRA = Astroformulas.RADec(Days2000, TargetALT, TargetAZI, SiteLat, SiteLong, 1)
-
-            If RotateDirection = "CW" Then
-                'add Distance angle
-                FinalRa = Range360(MountRA + RotateAngle)  'Clockwise
-                SlewNoRotate = True
-            Else 'Rotate is CCW
-                'Substract Distance angle
-                FinalRa = Range360(MountRA - RotateAngle)  'counterClockwise
-                SlewNoRotate = True
-            End If
-
-        End If
-
-
-        FinalDec = TargetDec
-        TBFinalDec.Text = DDtohms(FinalDec, 2)
-        TBFinalRa.Text = DDtohms(FinalRa / 15, 1)
-
-        If SlewNoRotate = False Then
-            'Cannot use Slew, Use Manual Rotate
-            BTNSlew.Enabled = False
-            BTNSlew.BackColor = Color.Red
-            'BTNAbort.Enabled = False
-            'BTNAbort.BackColor = Color.Silver
-            LBCannotSlew.Visible = True
-            BTRotate.BackColor = Color.LimeGreen
-            BTRotate.Enabled = True
-            'bring the mount the closest possible to  the bullseye
-        Else
-            'Enable button to slew to bullseye
-            BTNSlew.Enabled = True
-            BTNSlew.BackColor = Color.LimeGreen
-            'Enable abort button
-            'BTNAbort.BackColor = Color.Silver
-            'BTNAbort.Enabled = True
-            LBCannotSlew.Visible = False
-            BTRotate.BackColor = Color.Red
-            BTRotate.Enabled = False
-
-        End If
-
+        MountSiderealTime = objtelescope.SiderealTime
+        TBMountSidereal.Text = DDtohms(MountSiderealTime, 1)
     End Sub
     Private Sub Getlatlong()
         ' Store Mount longitude in SiteLong 
@@ -464,22 +315,18 @@
             objtelescope.Tracking = True
         End If
 
+        ' convert the Flat Panel ALT AZ to RA DEC and then slew to Flat Position
+        FinalDec = Astroformulas.RADec(Days2000, My.Settings.FlatAltitude, My.Settings.FlatAzimuth, SiteLat, SiteLong, 2)
+        FinalRa = Astroformulas.RADec(Days2000, My.Settings.FlatAltitude, My.Settings.FlatAzimuth, SiteLat, SiteLong, 1)
+
         objtelescope.TargetRightAscension = FinalRa / 15
         objtelescope.TargetDeclination = FinalDec
         objtelescope.SlewToTargetAsync()
         BTNAbort.BackColor = Color.Yellow
 
+        'Stop tracking facing Flat Panel
+        objtelescope.Tracking = False
 
-    End Sub
-    Private Sub BTRotate_Click(sender As Object, e As EventArgs) Handles BTRotate.Click
-        If Statustracking = True Then
-            objtelescope.TargetRightAscension = FinalRa / 15
-            objtelescope.TargetDeclination = FinalDec
-            objtelescope.SlewToTargetAsync()
-            BTNAbort.BackColor = Color.Yellow
-        Else
-            MessageBox.Show("Cannot Rotate if Scope is not tracking")
-        End If
     End Sub
     Private Sub BTNAbort_Click(sender As Object, e As EventArgs) Handles BTNAbort.Click
         objtelescope.AbortSlew()
@@ -495,53 +342,6 @@
         'box.Show()
         Form2.Show()
     End Sub
-    Private Sub BTSlewLeft_MouseDown(sender As Object, e As MouseEventArgs) Handles BTSlewLeft.MouseDown
-        objtelescope.MoveAxis(0, -4)
-    End Sub
-    Private Sub BTSlewLeft_MouseUp(sender As Object, e As MouseEventArgs) Handles BTSlewLeft.MouseUp
-        objtelescope.MoveAxis(0, 0)
-    End Sub
-    Private Sub BTSlewRight_MouseDown(sender As Object, e As MouseEventArgs) Handles BTSlewRight.MouseDown
-        objtelescope.MoveAxis(0, 4)
-    End Sub
-    Private Sub BTSlewRight_MouseUp(sender As Object, e As MouseEventArgs) Handles BTSlewRight.MouseUp
-        objtelescope.MoveAxis(0, 0)
-    End Sub
-
-    Private Sub BTNCP_Click(sender As Object, e As EventArgs) Handles BTNCP.Click
-
-        Dim NCPAzimuth As Double = 0.0000005
-
-        ' convert the target ALT AZ ro RA DEC and then slew to NCP
-        Dim NCPDec As Double = Astroformulas.RADec(Days2000, SiteLat, NCPAzimuth, SiteLat, SiteLong, 2)
-        Dim NCPRA As Double = Astroformulas.RADec(Days2000, SiteLat, NCPAzimuth, SiteLat, SiteLong, 1)
-        objtelescope.Tracking = True
-        objtelescope.TargetRightAscension = NCPRA / 15
-        objtelescope.TargetDeclination = NCPDec
-        objtelescope.SlewToTargetAsync()
-        BTNAbort.BackColor = Color.Yellow
-        'wait until slewing is finished
-        ' Threading.Thread.Sleep(5000) 'not needed
-        objtelescope.Tracking = False
-
-    End Sub
-
-    Private Sub BTFlip_Click(sender As Object, e As EventArgs) Handles BTFlip.Click
-
-        If MountSideofPier = 0 Then
-            ' "Pier East"
-            objtelescope.MoveAxis(1, +4)
-        Else
-            ' "Pier West"
-            objtelescope.MoveAxis(1, -4)
-        End If
-        TenthSec = 0
-        Timer3.Start() 'Timer starts functioning
-        BTNAbort.BackColor = Color.Yellow
-        'MessageBox.Show(objtelescope.AxisRates(1))
-
-    End Sub
-
     Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles Timer3.Tick
 
         TenthSec = TenthSec + 1
@@ -550,8 +350,9 @@
             objtelescope.MoveAxis(1, 0)
         End If
 
-
     End Sub
+
+
 End Class
 
 Public Class Astroformulas

@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -56,18 +56,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-        Public Property AngleSetting() As Double
-            Get
-                Return CType(Me("AngleSetting"),Double)
-            End Get
-            Set
-                Me("AngleSetting") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("")>  _
         Public Property Telescope() As String
             Get
@@ -81,12 +69,24 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-        Public Property PastHorizon() As Double
+        Public Property FlatAltitude() As Double
             Get
-                Return CType(Me("PastHorizon"),Double)
+                Return CType(Me("FlatAltitude"),Double)
             End Get
             Set
-                Me("PastHorizon") = value
+                Me("FlatAltitude") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property FlatAzimuth() As Double
+            Get
+                Return CType(Me("FlatAzimuth"),Double)
+            End Get
+            Set
+                Me("FlatAzimuth") = value
             End Set
         End Property
     End Class
@@ -100,9 +100,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.PolarAssist.My.MySettings
+        Friend ReadOnly Property Settings() As Global.FlatPanelAssist.My.MySettings
             Get
-                Return Global.PolarAssist.My.MySettings.Default
+                Return Global.FlatPanelAssist.My.MySettings.Default
             End Get
         End Property
     End Module
